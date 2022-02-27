@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file, Response
 import werkzeug.utils as w
 from flask_cors import CORS
+import time
 
 app = Flask(__name__)
 CORS(app)
@@ -15,8 +16,14 @@ def upload():
     print("method called")
     imagefile = request.files[str(0)]
     filename = w.secure_filename(imagefile.filename)
-    imagefile.save("./images/" + filename)
+    fn = filename[:len(filename) - 4]
+    millis = round(time.time() * 1000)
+    imagefile.save("./images/" + fn + "/" + fn + "_" + str(millis) + ".jpg")
     return jsonify({"message": "Image uploaded successfully"})
+
+
+def current_milli_time():
+    return round(time.time() * 1000)
 
 
 if __name__ == '__main__':
