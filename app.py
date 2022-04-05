@@ -20,9 +20,5 @@ def upload():
     return jsonify({"message": "Image uploaded successfully"})
 
 
-def current_milli_time():
-    return round(time.time() * 1000)
-
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5555)
