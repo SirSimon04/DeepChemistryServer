@@ -1,8 +1,17 @@
-from flask import Flask, request, jsonify, send_file, Response
+import io
+import json
+
+from flask import Flask, request, jsonify, send_file, Response, make_response
 import werkzeug.utils as w
 import time
+import base64
+from base64 import encodebytes
+from PIL import Image
+import io
+import glob
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def hello_world():  # put application's code here
@@ -18,6 +27,31 @@ def upload():
     millis = round(time.time() * 1000)
     imagefile.save("./images/" + fn + "/" + fn + "_" + str(millis) + ".jpg")
     return jsonify({"message": "Image uploaded successfully"})
+
+
+@app.route("/validate", methods=["GET"])
+def get_validation_images():
+
+    paths = [f for f in glob.glob("./images/*/*")]
+
+    encoded_images = []
+
+    for path in paths:
+
+        #encoded_images.append({"name": path[-path.rfind("/")-1:path.rfind("_")].capitalize(), "base64": get_response_image(path)})
+
+        encoded_images.append(
+            {"name": path[path.rfind("/")+1:path.rfind("_")], "base64": get_response_image(path)})
+
+    return make_response(jsonify({"images": encoded_images}), 200)
+
+
+def get_response_image(image_path):
+    pil_img = Image.open(image_path, mode='r')  # reads the PIL image
+    byte_arr = io.BytesIO()
+    pil_img.save(byte_arr, format='PNG')  # convert the PIL image to byte array
+    encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')  # encode as base64
+    return encoded_img
 
 
 if __name__ == '__main__':
