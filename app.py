@@ -9,6 +9,7 @@ from base64 import encodebytes
 from PIL import Image
 import io
 import glob
+import os
 
 app = Flask(__name__)
 
@@ -43,8 +44,7 @@ def get_validation_images():
         #encoded_images.append({"name": path[-path.rfind("/")-1:path.rfind("_")].capitalize(), "base64": get_response_image(path)})
 
         encoded_images.append(
-            {"name": path[path.rfind("/")+1:path.rfind("_")], "base64": get_response_image(path), "index": paths.index(path)})
-
+            {"name": path[path.rfind("/")+1:path.rfind("_")], "base64": get_response_image(path), "path": path})
 
     resp = Response(json.dumps({"images": encoded_images}), 200, mimetype="application/json")
 
@@ -53,8 +53,19 @@ def get_validation_images():
     return resp
 
 
+@app.route("/v", methods=["GET"])
+def validate():
+
+    args = request.args
+    
+    path = args.get("path")
+
+    os.rename(path, path.replace("images", "validated"))
+
+    return jsonify({"msg": "Success"})
+
 def get_response_image(image_path):
-    pil_img = Image.open(image_path, mode='r')  # reads the PIL image
+    pil_img = open(image_path, mode='r')  # reads the PIL image
     pil_img = pil_img.convert("RGB")
     byte_arr = io.BytesIO()
     pil_img.save(byte_arr, format="JPEG")  # convert the PIL image to byte array
