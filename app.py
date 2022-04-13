@@ -64,6 +64,16 @@ def validate():
 
     return jsonify({"msg": "Success"})
 
+@app.route("/delete", methods=["GET"])
+def delete():
+
+    args = request.args
+    path = args.get("path")
+
+    os.remove(path)
+
+    return jsonify({"msg": "Success"})
+
 def get_response_image(image_path):
     pil_img = open(image_path, mode='r')  # reads the PIL image
     pil_img = pil_img.convert("RGB")
