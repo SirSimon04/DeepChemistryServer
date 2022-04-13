@@ -36,20 +36,28 @@ def get_validation_images():
 
     encoded_images = []
 
+    index = 0
+
     for path in paths:
 
         #encoded_images.append({"name": path[-path.rfind("/")-1:path.rfind("_")].capitalize(), "base64": get_response_image(path)})
 
         encoded_images.append(
-            {"name": path[path.rfind("/")+1:path.rfind("_")], "base64": get_response_image(path)})
+            {"name": path[path.rfind("/")+1:path.rfind("_")], "base64": get_response_image(path), "index": paths.index(path)})
 
-    return make_response(jsonify({"images": encoded_images}), 200)
+
+    resp = Response(json.dumps({"images": encoded_images}), 200, mimetype="application/json")
+
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+
+    return resp
 
 
 def get_response_image(image_path):
     pil_img = Image.open(image_path, mode='r')  # reads the PIL image
+    pil_img = pil_img.convert("RGB")
     byte_arr = io.BytesIO()
-    pil_img.save(byte_arr, format='PNG')  # convert the PIL image to byte array
+    pil_img.save(byte_arr, format="JPEG")  # convert the PIL image to byte array
     encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')  # encode as base64
     return encoded_img
 
