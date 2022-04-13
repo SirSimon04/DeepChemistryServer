@@ -6,7 +6,7 @@ import werkzeug.utils as w
 import time
 import base64
 from base64 import encodebytes
-from PIL import Image
+from PIL import Image as pillow
 import io
 import glob
 import os
@@ -64,6 +64,7 @@ def validate():
 
     return jsonify({"msg": "Success"})
 
+
 @app.route("/delete", methods=["GET"])
 def delete():
 
@@ -74,8 +75,9 @@ def delete():
 
     return jsonify({"msg": "Success"})
 
+
 def get_response_image(image_path):
-    pil_img = open(image_path, mode='r')  # reads the PIL image
+    pil_img = pillow.open(image_path, mode='r')  # reads the PIL image
     pil_img = pil_img.convert("RGB")
     byte_arr = io.BytesIO()
     pil_img.save(byte_arr, format="JPEG")  # convert the PIL image to byte array
