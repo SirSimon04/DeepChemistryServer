@@ -1,10 +1,7 @@
-import io
 import json
-
-from flask import Flask, request, jsonify, send_file, Response, make_response
+from flask import Flask, request, jsonify, Response
 import werkzeug.utils as w
 import time
-import base64
 from base64 import encodebytes
 from PIL import Image as pillow
 import io
