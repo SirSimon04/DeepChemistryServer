@@ -39,7 +39,7 @@ def get_validation_images():
 
     index = 0
 
-    for path in paths:
+    for path in paths[0:50]:
 
         #encoded_images.append({"name": path[-path.rfind("/")-1:path.rfind("_")].capitalize(), "base64": get_response_image(path)})
 
@@ -86,4 +86,4 @@ def get_response_image(image_path):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=6666)
+    app.run(host="0.0.0.0", port=5555)
